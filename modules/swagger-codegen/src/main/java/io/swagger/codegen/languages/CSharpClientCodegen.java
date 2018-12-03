@@ -92,7 +92,7 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
                 .put(NET35, ".NET Framework 3.5 compatible")
                 .put(NET45, ".NET Framework 4.5+ compatible")
                 .put(NETSTANDARD, ".NET Standard 1.3 compatible")
-                .put(UWP, "Universal Windows Platform - beta support")
+                .put(UWP, "Universal Windows Platform (IMPORTANT: this will be decommissioned and replaced by v5.0)")
                 .build();
         framework.defaultValue(this.targetFramework);
         framework.setEnum(frameworks);
@@ -210,8 +210,8 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
             setSupportsAsync(Boolean.TRUE);
             setSupportsUWP(Boolean.FALSE);
             setNetStandard(Boolean.TRUE);
-            additionalProperties.put("supportsAsync", this.supportsUWP);
-            additionalProperties.put("supportsUWP", this.supportsAsync);
+            additionalProperties.put("supportsAsync", this.supportsAsync);
+            additionalProperties.put("supportsUWP", this.supportsUWP);
             additionalProperties.put("netStandard", this.netStandard);
 
             //Tests not yet implemented for .NET Standard codegen
@@ -425,7 +425,7 @@ public class CSharpClientCodegen extends AbstractCSharpCodegen {
 
     @Override
     public Map<String, Object> postProcessModels(Map<String, Object> objMap) {
-    	return super.postProcessModels(objMap);
+        return super.postProcessModels(objMap);
     }
 
     @Override
