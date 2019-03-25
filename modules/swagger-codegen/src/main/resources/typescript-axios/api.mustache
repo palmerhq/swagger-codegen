@@ -29,7 +29,7 @@ export class {{classname}}Resource {
         {{#allParams.0}}<{{/allParams.0}}
         {{#allParams}}
             {{^isQueryParam}}
-                {{#titlecase}}{{paramName}}{{/titlecase}} = Partial<{{{dataType}}}>{{^-last}},{{/-last}}
+                {{#titlecase}}{{paramName}}{{/titlecase}} = {{{dataType}}}{{^-last}},{{/-last}}
             {{/isQueryParam}}
         {{/allParams}}
         {{#hasQueryParams}}
