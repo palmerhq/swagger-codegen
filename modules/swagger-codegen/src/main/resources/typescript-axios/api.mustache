@@ -25,32 +25,7 @@ export class {{classname}}Resource {
      * {{notes}}
      {{#allParams}}* @param {{paramName}} {{description}}
      {{/allParams}}*/
-    public {{nickname}}
-        {{#allParams.0}}<{{/allParams.0}}
-        {{#allParams}}
-            {{^isQueryParam}}
-                {{#titlecase}}{{paramName}}{{/titlecase}} = {{{dataType}}}{{^-last}},{{/-last}}
-            {{/isQueryParam}}
-        {{/allParams}}
-        {{#hasQueryParams}}
-            Query = { {{#queryParams}}{{paramName}}{{^required}}?{{/required}}: {{dataType}}{{^-last}},{{/-last}} {{/queryParams}}}{{^-last}},{{/-last}}
-        {{/hasQueryParams}}
-        {{#allParams.0}}>{{/allParams.0}}(
-        {{! Partialize all non query param args by default}}
-        {{#allParams}}
-            {{^isQueryParam}}
-                {{paramName}}{{^required}}?{{/required}}: {{#titlecase}}{{paramName}}{{/titlecase}},
-            {{/isQueryParam}}
-        {{/allParams}}
-
-        {{! query param }}
-        {{#hasQueryParams}}
-            query?: Query,
-        {{/hasQueryParams}}
-
-        axiosConfig?: AxiosRequestConfig
-    ): Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}{}{{/returnType}}> {
-
+    public {{nickname}}({{#allParams}}{{^isQueryParam}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/isQueryParam}}{{/allParams}}{{#hasQueryParams}}query?: { {{#queryParams}}{{paramName}}{{^required}}?{{/required}}: {{dataType}}{{^-last}},{{/-last}} {{/queryParams}}}, {{/hasQueryParams}}axiosConfig?: AxiosRequestConfig): Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}{}{{/returnType}}> {
         const reqPath = '{{path}}'{{#pathParams}}
                     .replace('{' + '{{baseName}}}', String({{paramName}}{{#isDateTime}}.toISOString(){{/isDateTime}})){{/pathParams}};
 {{#hasFormParams}}

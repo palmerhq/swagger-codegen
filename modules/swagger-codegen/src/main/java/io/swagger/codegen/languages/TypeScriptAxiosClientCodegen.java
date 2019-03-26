@@ -4,7 +4,6 @@ import io.swagger.codegen.CodegenModel;
 import io.swagger.codegen.CodegenOperation;
 import io.swagger.codegen.CodegenProperty;
 import io.swagger.codegen.SupportingFile;
-import io.swagger.codegen.mustache.TitlecaseLambda;
 import io.swagger.models.ModelImpl;
 
 import java.io.File;
@@ -38,7 +37,6 @@ public class TypeScriptAxiosClientCodegen extends AbstractTypeScriptClientCodege
     public void processOpts() {
         super.processOpts();
         supportingFiles.add(new SupportingFile("axios.config.mustache", "axios.config.ts"));
-        additionalProperties.put("titlecase", new TitlecaseLambda());
     }
 
     @Override
