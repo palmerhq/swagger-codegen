@@ -25,25 +25,45 @@ export class {{classname}}Resource {
      * {{notes}}
      {{#allParams}}* @param {{paramName}} {{description}}
      {{/allParams}}*/
-    public {{nickname}}({{#allParams}}{{^isQueryParam}}{{paramName}}{{^required}}?{{/required}}: {{{dataType}}}, {{/isQueryParam}}{{/allParams}}{{#hasQueryParams}}query?: { {{#queryParams}}{{paramName}}{{^required}}?{{/required}}: {{dataType}}{{^-last}},{{/-last}} {{/queryParams}}}, {{/hasQueryParams}}axiosConfig?: AxiosRequestConfig): Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}{}{{/returnType}}> {
+    public {{nickname}}({{#allParams}}{{^isQueryParam}}{{paramName}}{{^required}}?{{/required}}: Partial<{{{dataType}}}>, {{/isQueryParam}}{{/allParams}}{{#hasQueryParams}}query?: { {{#queryParams}}{{paramName}}{{^required}}?{{/required}}: {{dataType}}{{^-last}},{{/-last}} {{/queryParams}}}, {{/hasQueryParams}}axiosConfig?: AxiosRequestConfig): Promise<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}{}{{/returnType}}> {
         const reqPath = '{{path}}'{{#pathParams}}
                     .replace('{' + '{{baseName}}}', String({{paramName}}{{#isDateTime}}.toISOString(){{/isDateTime}})){{/pathParams}};
-{{#hasFormParams}}
+    {{#hasFormParams}}
+        let hasFile = false;
+        {{#formParams}}
+            {{#isFile}}hasFile = true;
+            {{/isFile}}
+        {{/formParams}}
+
         let reqFormParams = {
-{{#formParams}}
+        {{#formParams}}
             {{baseName}}: {{paramName}}{{^-last}},{{/-last}}
-{{/formParams}}
+        {{/formParams}}
         };
-{{/hasFormParams}}
+
+        let headers: any;
+        let data: any;
+
+        if (hasFile) {
+            headers = { 'Content-Type': 'multipart/form-data' };
+            data = new FormData();
+            Object.keys(reqFormParams).forEach((key) => {
+                data.append(key, reqFormParams[key]);
+            });
+        } else {
+            headers = { 'Content-Type': 'application/x-www-form-urlencoded' };
+            data = stringify(reqFormParams);
+        }
+    {{/hasFormParams}}
         let reqConfig = {
             ...axiosConfig,
             method: '{{httpMethod}}',
             url: reqPath{{#hasQueryParams}},
             params: query{{/hasQueryParams}}{{#bodyParam}},
             data: {{paramName}}{{/bodyParam}}{{#hasFormParams}},
-            headers: { 'Content-Type': 'application/x-www-form-urlencoded'},
-            data: stringify(reqFormParams)
-{{/hasFormParams}}
+            headers: headers,
+            data: data
+            {{/hasFormParams}}
 
         };
         return axios.request(reqConfig)
