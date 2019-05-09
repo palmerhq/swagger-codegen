@@ -9,19 +9,34 @@ export interface {{classname}} {{#parent}}extends models.{{{parent}}} {{/parent}
      * {{{description}}}
      */
     {{/description}}
-    {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{{datatypeWithEnum}}}{{/isEnum}}{{^isEnum}}{{{datatype}}}{{/isEnum}};
+    {{name}}{{^required}}?{{/required}}: {{#isEnum}}{{#isString}} keyof typeof {{classname}}.{{enumName}}{{/isString}}{{^isString}} Array<keyof typeof {{classname}}.{{enumName}}>{{/isString}}{{/isEnum}}{{^isEnum}}{{{datatype}}}{{/isEnum}};
 
 {{/vars}}
 }
 
+
 {{#hasEnums}}
-export namespace {{classname}} {
+    {{#vars}}{{#isEnum}}
+    interface {{enumName}}Shape {
+        {{#allowableValues}}
+            {{#enumVars}}
+                readonly {{{name}}}: {{{value}}}{{^-last}},{{/-last}}
+            {{/enumVars}}
+        {{/allowableValues}}
+    }
+    {{/isEnum}}{{/vars}}
+{{/hasEnums}}
+
+
+{{#hasEnums}}
+export class {{classname}} {
 {{#vars}}{{#isEnum}}
-    export enum {{enumName}} {
+    static {{enumName}}: {{enumName}}Shape = {
     {{#allowableValues}}
         {{#enumVars}}
-            {{{name}}} = <any> {{{value}}}{{^-last}},{{/-last}}
+            {{{name}}}: {{{value}}}{{^-last}},{{/-last}}
         {{/enumVars}}
     {{/allowableValues}}
-    }{{/isEnum}}{{/vars}}
+    }
+    {{/isEnum}}{{/vars}}
 }{{/hasEnums}}
